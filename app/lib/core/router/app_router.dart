@@ -14,8 +14,6 @@ import '../../features/cycle/cycle_screen.dart';
 import '../../shared/widgets/app_scaffold.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final profileNotifier = ref.watch(userProfileProvider.notifier);
-
   return GoRouter(
     initialLocation: '/today',
     redirect: (context, state) {

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>清志 ClarityLog · 产品设计手稿 v3</title>
+<style>
+:root{
+  --pine:#2A5440;--pine-d:#1E3D2F;--pine-l:#4A7C63;
+  --paper:#F7F4EE;--white:#FDFCF9;
+  --sage:#E6EDE0;--sage-m:#C5D5BD;--sage-d:#A8BFA0;
+  --amber:#C4784A;--amber-l:#F4EAD8;
+  --ink:#1A2E24;--ink-m:#3D5547;--muted:#718A7A;
+  --border:#DDE5D8;--border-m:#C8D5C0;
+  --sh-s:0 1px 3px rgba(26,46,36,.08),0 1px 2px rgba(26,46,36,.04);
+  --sh-m:0 4px 16px rgba(26,46,36,.10),0 2px 4px rgba(26,46,36,.06);
+  --sh-l:0 12px 40px rgba(26,46,36,.14);
+  --r-s:10px;--r-m:16px;--r-l:24px;--r-xl:32px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei','Noto Sans SC',system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.65}
+h1,h2{font-family:'Noto Serif SC','STSong','SimSun',Georgia,serif;font-weight:400}
+h1{font-size:clamp(32px,5vw,60px);line-height:1.25}
+h2{font-size:clamp(22px,3vw,36px);line-height:1.35}
+h3{font-size:17px;font-weight:600;line-height:1.4;color:var(--ink)}
+p{color:var(--ink-m)}
+a{color:var(--pine);text-decoration:none}
+a:hover{text-decoration:underline}
+button{cursor:pointer;font-family:inherit}
+.lbl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:500}
+.muted{color:var(--muted)}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+.hidden{display:none!important}
+
+/* ── HEADER ── */
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 5%;background:var(--paper);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.brand{display:flex;align-items:center;gap:10px}
+.b-icon{width:30px;height:30px;background:var(--pine);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.b-icon svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.2}
+.b-name{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.3px}
+.b-name span{font-weight:400;color:var(--muted);font-size:12px;margin-left:6px;letter-spacing:1.5px}
+.tabs{display:flex;gap:3px;background:var(--sage);padding:3px;border-radius:9px}
+.tab{padding:7px 16px;border:none;border-radius:6px;cursor:pointer;font:14px/1 inherit;color:var(--muted);background:transparent;transition:all .18s}
+.tab.on{background:var(--white);color:var(--ink);font-weight:600;box-shadow:var(--sh-s)}
+
+/* ── APP STUDIO ── */
+#av{display:grid;grid-template-columns:1fr 390px 1fr;gap:48px;padding:48px 6% 60px;max-width:1400px;margin:auto;align-items:start}
+.s-intro{padding-top:36px}
+.s-intro h1{font-size:40px;margin:14px 0 18px}
+.s-intro p{font-size:14px;margin-bottom:8px}
+
+/* Phone frame */
+.phone-wrap{position:sticky;top:88px}
+.phone{width:100%;background:var(--white);border:2px solid var(--ink);border-radius:44px;overflow:hidden;box-shadow:12px 18px 0 var(--sage-m),0 0 0 1px var(--border)}
+.p-top{padding:12px 22px 6px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--ink)}
+.p-island{width:88px;height:26px;background:var(--ink);border-radius:16px}
+.p-icons{display:flex;gap:5px;align-items:center}
+.p-screen{min-height:570px;max-height:620px;overflow-y:auto}
+.p-screen::-webkit-scrollbar{width:0}
+.p-nav{display:flex;border-top:1px solid var(--border);padding:8px 2px 18px;background:var(--white);position:sticky;bottom:0;z-index:10}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;padding:5px 0;color:var(--muted);font-size:10.5px;font-family:inherit;transition:color .18s}
+.nb svg{width:22px;height:22px}
+.nb.on{color:var(--pine)}
+.nb .dot{width:4px;height:4px;background:var(--pine);border-radius:50%;margin:-2px auto 0;opacity:0}
+.nb.on .dot{opacity:1}
+
+/* Screen content */
+.sc{padding:18px 20px}
+
+/* Cards */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-m);padding:16px;margin-bottom:12px;box-shadow:var(--sh-s)}
+.c-sage{background:var(--sage);border-color:var(--sage-m);box-shadow:none}
+.c-amber{background:var(--amber-l);border-color:#E8C8A8;box-shadow:none}
+.c-pine{background:var(--pine);color:#fff;border-color:var(--pine-d)}
+.c-pine p,.c-pine .muted{color:rgba(255,255,255,.72)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:var(--r-xl);cursor:pointer;font:15px/1 inherit;font-weight:600;padding:13px 22px;min-height:46px;transition:all .18s}
+.btn-w{width:100%}
+.btn-p{background:var(--pine);color:#fff}
+.btn-p:hover{background:var(--pine-d)}
+.btn-g{background:transparent;color:var(--pine);border:1.5px solid var(--border)}
+.btn-g:hover{border-color:var(--pine);background:var(--sage)}
+.btn-t{background:transparent;color:var(--pine);padding:7px 0;min-height:auto;font-weight:500;border:none}
+.btn-q{background:none;border:none;color:var(--pine);font:13px/1 inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:3px 0}
+
+/* Chips */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.chip{padding:7px 13px;background:var(--white);border:1.5px solid var(--border);border-radius:20px;font:13px/1 inherit;color:var(--ink-m);cursor:pointer;transition:all .18s}
+.chip:hover{border-color:var(--sage-m);background:var(--sage)}
+.chip.on{background:var(--pine);border-color:var(--pine);color:#fff}
+
+/* Range slider */
+input[type=range]{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:var(--sage);border-radius:3px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;background:var(--pine);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--pine),var(--sh-s);cursor:pointer}
+
+/* Form controls */
+select,input[type=date],input[type=number],input[type=text]{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--r-s);background:var(--white);font:14px/1 inherit;color:var(--ink);outline:none;transition:border-color .18s}
+select:focus,input:focus{border-color:var(--pine)}
+.fl{display:block;margin:12px 0 5px;font-size:13px;font-weight:500;color:var(--ink)}
+
+/* Progress bar */
+.prog{display:flex;gap:5px;margin:14px 0 20px}
+.ps{height:3px;flex:1;background:var(--sage);border-radius:2px}
+.ps.done{background:var(--pine)}
+
+/* Settings list */
+.si{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.si:last-child{border-bottom:none}
+.si-l{display:flex;align-items:center;gap:11px}
+.si-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
+
+/* Period tag */
+.ptag{font-size:12px;color:#8B4A4A;border-left:3px solid #C47878;padding-left:9px}
+
+/* Age note */
+.agenote{font-size:12px;color:var(--muted);border-left:2px solid var(--sage-m);padding:7px 11px;margin:10px 0;border-radius:0 5px 5px 0}
+
+/* Source badge */
+.sbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;background:var(--sage);border-radius:20px;font-size:11px;color:var(--muted);font-weight:500}
+
+/* Aside */
+.s-aside{padding-top:48px}
+.s-aside h2{font-size:24px;margin:14px 0 20px}
+.an{border-top:1px solid var(--border);padding-top:18px;margin-top:18px;font-size:13.5px;color:var(--muted);line-height:1.6}
+.an strong{color:var(--ink);display:block;margin-bottom:3px;font-weight:600}
+
+/* ── LANDING ── */
+#wv{}
+.hero{max-width:1200px;margin:auto;padding:80px 5% 90px;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center}
+.hero h1{font-size:clamp(36px,4.5vw,66px);line-height:1.22;margin-bottom:18px}
+.hero p.sub{font-size:17px;margin-bottom:30px;max-width:480px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.hero-phone{width:260px;margin:auto;transform:perspective(900px) rotateY(-8deg) rotateX(2deg);filter:drop-shadow(16px 24px 32px rgba(26,46,36,.14))}
+.hero-phone .phone{border-radius:38px;border-width:2px}
+.mini-screen{padding:14px 18px}
+.mini-score{display:flex;align-items:center;justify-content:center;padding:12px 0}
+.mini-cta{background:var(--pine);color:#fff;border-radius:14px;padding:11px;text-align:center;font-size:13px;font-weight:600;margin-top:10px}
+
+.section{padding:70px 5%}
+.si-wrap{max-width:1200px;margin:auto}
+.sh{margin-bottom:44px}
+.sh h2{margin-top:10px}
+.band{background:var(--sage)}
+
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+
+.fc{background:var(--white);border:1px solid var(--border);border-radius:var(--r-l);padding:30px;box-shadow:var(--sh-s);transition:box-shadow .2s}
+.fc:hover{box-shadow:var(--sh-m)}
+.fi{width:46px;height:46px;border-radius:13px;background:var(--sage);display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:21px}
+
+.snum{width:30px;height:30px;border-radius:50%;border:2px solid var(--pine);color:var(--pine);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-bottom:14px}
+
+.pc{border:1px solid var(--border);border-radius:var(--r-l);padding:34px;background:var(--white);box-shadow:var(--sh-s)}
+.pc.feat{border-color:var(--pine);border-width:2px;background:linear-gradient(135deg,var(--white) 0%,#EFF5EC 100%)}
+.pbig{font-size:50px;font-weight:700;color:var(--ink);line-height:1;margin:14px 0}
+.pbig span{font-size:17px;color:var(--muted);font-weight:400}
+.fl-list{list-style:none}
+.fl-list li{padding:7px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:8px}
+.fl-list li:last-child{border-bottom:none}
+.fl-list li::before{content:'✓';color:var(--pine);font-weight:700;flex-shrink:0}
+
+details{border-bottom:1px solid var(--border)}
+details summary{padding:18px 0;list-style:none;cursor:pointer;font-weight:600;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-size:15px}
+details summary::after{content:'+';font-size:19px;color:var(--muted);flex-shrink:0}
+details[open] summary::after{content:'−'}
+details p{padding:0 0 18px;font-size:14px}
+
+footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:24px}
+
+/* Modal */
+dialog{border:none;border-radius:var(--r-l);padding:30px;max-width:380px;width:calc(100% - 48px);box-shadow:var(--sh-l)}
+dialog::backdrop{background:rgba(26,46,36,.4);backdrop-filter:blur(4px)}
+
+/* Responsive */
+@media(max-width:1100px){
+  #av{grid-template-columns:1fr 380px;gap:30px}
+  .s-aside{display:none}
+}
+@media(max-width:720px){
+  #av{display:block;padding:22px 16px}
+  .phone-wrap{position:static;margin:22px 0}
+  .hero{grid-template-columns:1fr;padding:44px 5%}
+  .hero-phone{display:none}
+  .g3{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+  .hero h1{font-size:32px}
+  .s-intro h1{font-size:30px}
+  .tabs span{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="b-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9"/><path d="M12 7v5l3 2.5"/></svg>
+    </div>
+    <div class="b-name">清志 <span>CLARITYLOG</span></div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" id="t-app" onclick="sw('app')">App 手稿</button>
+    <button class="tab" id="t-web" onclick="sw('web')">官网手稿</button>
+  </div>
+</header>
+
+<!-- ═══════════ APP VIEW ═══════════ -->
+<div id="av">
+  <div class="s-intro">
+    <div class="lbl">01 / 移动端体验</div>
+    <h1>有些感受，<br>值得被记住。</h1>
+    <p class="muted">低负担地记录，找到属于自己的线索。</p>
+    <p class="note" style="margin-top:16px">支持 iOS / Android · 交互设计手稿<br>演示数据，刷新重置</p>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="p-top">
+        <span>9:41</span>
+        <div class="p-island"></div>
+        <div class="p-icons">
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="var(--ink)"><rect x="0" y="3" width="2.5" height="8" rx=".8"/><rect x="3.5" y="2" width="2.5" height="9" rx=".8"/><rect x="7" y="0" width="2.5" height="11" rx=".8"/><rect x="10.5" y="0" width="2.5" height="11" rx=".8" opacity=".25"/></svg>
+          <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="2" stroke="var(--ink)" stroke-width="1"/><rect x="2" y="2" width="12" height="7" rx="1" fill="var(--ink)"/><path d="M20 3.5v4a2 2 0 000-4z" fill="var(--ink)"/></svg>
+        </div>
+      </div>
+      <div class="p-screen" id="ps"></div>
+      <nav class="p-nav" id="pn">
+        <button class="nb on" data-p="today" onclick="gp('today')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2.5"/></svg>
+          今日<div class="dot"></div>
+        </button>
+        <button class="nb" data-p="log" onclick="gp('log')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+          记录<div class="dot"></div>
+        </button>
+        <button class="nb" data-p="insight" onclick="gp('insight')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="4 20 8 14 12 17 16 10 20 13"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+          洞察<div class="dot"></div>
+        </button>
+        <button class="nb" data-p="me" onclick="gp('me')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          我的<div class="dot"></div>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="s-aside">
+    <div class="lbl">设计说明</div>
+    <h2>少一点负担，<br>多一点理解。</h2>
+    <div class="an"><strong>01 · 单一主要任务</strong>首页每天只突出一次轻量记录，不用全填。</div>
+    <div class="an"><strong>02 · 不急着下结论</strong>关联不是因果，数据不足就如实说明。</div>
+    <div class="an"><strong>03 · 建议有出处</strong>适用条件与原始来源放在一起展示。</div>
+    <div class="an"><strong>04 · 低精力模式</strong>只需 30 秒，记一项也算完成。</div>
+    <p class="note" style="margin-top:22px">点击底部导航体验各页面。<br>数据仅在页面内存，刷新重置。</p>
+    <button class="btn btn-g" style="margin-top:18px" onclick="sw('web')">查看官网手稿 →</button>
+  </div>
+</div>
+
+<!-- ═══════════ WEB VIEW ═══════════ -->
+<div id="wv" class="hidden">
+
+  <!-- Hero -->
+  <section style="background:var(--white)">
+    <div class="hero">
+      <div>
+        <div class="lbl">为每一个想更清晰的日子</div>
+        <h1>把模糊的感受，<br>慢慢记清楚。</h1>
+        <p class="sub muted">清志陪你记录脑雾与日常生活，观察饮食、睡眠、活动中的线索，了解每条建议背后的依据。</p>
+        <div class="hero-cta">
+          <button class="btn btn-p" onclick="sw('app')">查看产品演示 ↗</button>
+          <button class="btn btn-g" onclick="modal('内测尚未开放。这是官网设计手稿，没有收集或发送任何个人信息。')">了解内测</button>
+        </div>
+        <p class="note">规划支持 iOS 与 Android · 中文优先 · 尚未发布</p>
+      </div>
+      <div class="hero-phone">
+        <div class="phone" style="border-radius:36px">
+          <div class="p-top" style="padding:10px 18px 4px"><span>9:41</span><div class="p-island" style="width:72px;height:22px"></div><span style="font-size:10px">●●●</span></div>
+          <div class="mini-screen">
+            <div class="lbl" style="margin-bottom:6px">清志 · 今日</div>
+            <div style="font-family:'Noto Serif SC',serif;font-size:19px;margin-bottom:14px">今天感觉怎样？</div>
+            <div class="mini-score">
+              <svg width="110" height="110" viewBox="0 0 110 110">
+                <circle cx="55" cy="55" r="44" fill="none" stroke="#E6EDE0" stroke-width="9"/>
+                <circle cx="55" cy="55" r="44" fill="none" stroke="#2A5440" stroke-width="9" stroke-dasharray="166 110" stroke-linecap="round" transform="rotate(-90 55 55)"/>
+                <text x="55" y="50" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2E24">6</text>
+                <text x="55" y="65" text-anchor="middle" font-size="10" fill="#718A7A">/ 10</text>
+              </svg>
+            </div>
+            <div style="background:var(--sage);border-radius:10px;padding:10px 12px;font-size:11px">
+              <div style="color:var(--muted);margin-bottom:4px">难集中 · 精神疲惫</div>
+              <div style="color:var(--ink)">午饭后明显加重，休息后稍好一些。</div>
+            </div>
+            <div class="mini-cta">记录今天 ＋</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pain points -->
+  <div class="band">
+    <section class="section">
+      <div class="si-wrap">
+        <div class="lbl">你也有这样的感受吗？</div>
+        <h2 style="margin:10px 0 36px">有些感觉，很难说清楚。</h2>
+        <div class="g3">
+          <div class="fc"><div class="fi">🌫️</div><h3>想专注，思绪却总在飘</h3><p style="margin-top:8px">刚做到一半，又忘了自己在做什么。</p></div>
+          <div class="fc"><div class="fi">💬</div><h3>熟悉的词，突然卡在嘴边</h3><p style="margin-top:8px">清楚知道想说什么，但就是想不起来。</p></div>
+          <div class="fc"><div class="fi">🔋</div><h3>忙了一天，脑子却更乱</h3><p style="margin-top:8px">不是懒，是努力之后反而更疲惫。</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="si-wrap">
+      <div class="sh"><div class="lbl">如何使用</div><h2 style="margin-top:10px">给自己一个轻一点的开始。</h2></div>
+      <div class="g3">
+        <div><div class="snum">01</div><h3>记下此刻</h3><p style="margin-top:8px">选择感受与症状。没精力时，只记一项也可以。30 秒完成一次记录。</p></div>
+        <div><div class="snum">02</div><h3>回看日常</h3><p style="margin-top:8px">把睡眠、饮食、活动与清晰度放在一起，观察可能的联系。</p></div>
+        <div><div class="snum">03</div><h3>了解下一步</h3><p style="margin-top:8px">阅读适合自己的建议，同时看到来源、适用范围和限制。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <div class="band">
+    <section class="section">
+      <div class="si-wrap">
+        <div class="sh"><div class="lbl">核心功能</div><h2 style="margin-top:10px">每一条建议，都应说清楚为什么。</h2></div>
+        <div class="g3" style="gap:20px">
+          <div class="fc"><div class="fi">🥗</div><h3>饮食与营养线索</h3><p style="margin-top:10px">记录饮食结构与规律。摄入估算不等于营养缺乏诊断，每个结果都会说明局限性。</p></div>
+          <div class="fc"><div class="fi">🏃</div><h3>活动与恢复观察</h3><p style="margin-top:10px">不仅记录运动，也留意活动后是否更疲惫。疑似活动耐受问题时不推荐增加运动量。</p></div>
+          <div class="fc"><div class="fi">📋</div><h3>看得见的证据</h3><p style="margin-top:10px">指南建议、研究结论和个人观察分开展示，附有来源、适用范围和审核时间。</p><a href="https://www.cdc.gov/long-covid/hcp/clinical-guidance/index.html" target="_blank" rel="noopener" style="font-size:12px;display:block;margin-top:10px">示例：CDC 临床指导 ↗</a></div>
+          <div class="fc"><div class="fi">📅</div><h3>周期与状态记录</h3><p style="margin-top:10px">可选择记录月经周期，观察周期变化与清晰度的个人关联。不预设经期必然加重脑雾。</p></div>
+          <div class="fc"><div class="fi">🔍</div><h3>洞察而非结论</h3><p style="margin-top:10px">展示实际记录数据，不足时如实说明。样本数量和遗漏都会展示，不虚构统计规律。</p></div>
+          <div class="fc"><div class="fi">📄</div><h3>就诊前的准备</h3><p style="margin-top:10px">导出可供医生参考的记录摘要，帮助说清楚症状历史。不替代诊疗。</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Pricing -->
+  <section class="section">
+    <div class="si-wrap">
+      <div class="sh"><div class="lbl">定价</div><h2 style="margin-top:10px">先从免费记录开始。</h2></div>
+      <div class="g2" style="max-width:700px">
+        <div class="pc">
+          <div class="lbl">基础版</div>
+          <div class="pbig">免费</div>
+          <p style="margin-bottom:18px;font-size:14px">个人记录，始终免费。</p>
+          <ul class="fl-list">
+            <li>日常记录与症状枚举</li>
+            <li>7 天趋势回看</li>
+            <li>原始数据导出</li>
+            <li>建议出处与安全信息</li>
+          </ul>
+        </div>
+        <div class="pc feat">
+          <div class="lbl">清志 Plus</div>
+          <div class="pbig">¥128 <span>/ 年</span></div>
+          <p style="margin-bottom:18px;font-size:14px">月付候选价 ¥18 · 价格尚在验证</p>
+          <ul class="fl-list">
+            <li>多因素深度回顾</li>
+            <li>结构化周报</li>
+            <li>自定义观察计划</li>
+            <li>就诊摘要导出排版</li>
+          </ul>
+          <button class="btn btn-p btn-w" style="margin-top:20px" onclick="modal('清志 Plus 尚未开放购买。这是价格假设，正式上线前需通过访谈验证。')">了解早鸟计划</button>
+        </div>
+      </div>
+      <p class="note" style="margin-top:16px">证据出处不单独收费。正式支付实现前核验各渠道规则。</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <div class="band">
+    <section class="section">
+      <div class="si-wrap">
+        <h2 style="margin-bottom:28px">你可能想知道</h2>
+        <details><summary>清志可以诊断或治疗脑雾吗？</summary><p>清志用于记录与健康信息支持，不能诊断病因或替代诊疗。持续或加重的困扰应向专业人员咨询。</p></details>
+        <details><summary>需要每天坚持记录吗？</summary><p>不用。可以跳过、补记或只记录一项，缺失日期会如实显示，不会被插值为正常。</p></details>
+        <details><summary>拍照能知道缺什么营养吗？</summary><p>不能。照片功能用于辅助识别食物并由你确认份量，不能测量体内营养水平或诊断缺乏。</p></details>
+        <details><summary>我的数据会上传或共享吗？</summary><p>当前手稿不上传任何数据，输入仅在当前页面内存中，刷新即重置。正式产品的隐私方案需在上线前完整披露。</p></details>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div>
+      <div style="font-size:17px;font-weight:700;margin-bottom:7px">◒ 清志 <span style="font-size:12px;color:var(--muted);font-weight:400;letter-spacing:2px">CLARITYLOG</span></div>
+      <p class="note">把模糊的感受，慢慢记清楚。</p>
+    </div>
+    <div><p class="note">产品概念手稿 · 尚未发布<br>不提供医疗诊断 · 中文优先</p></div>
+  </footer>
+</div>
+
+<dialog id="dlg">
+  <p id="dlg-m" style="margin-bottom:20px;line-height:1.6"></p>
+  <button class="btn btn-p" onclick="document.getElementById('dlg').close()">知道了</button>
+</dialog>
+
+<script>
+// ── STATE ──
+const S = { score:6, saved:false, profile:{sex:'',age:'',cycle:false}, periods:[] };
+
+// ── VIEW SWITCH ──
+function sw(v){
+  document.getElementById('av').classList.toggle('hidden',v!=='app');
+  document.getElementById('wv').classList.toggle('hidden',v!=='web');
+  document.getElementById('t-app').classList.toggle('on',v==='app');
+  document.getElementById('t-web').classList.toggle('on',v==='web');
+  window.scrollTo(0,0);
+}
+function modal(t){ document.getElementById('dlg-m').textContent=t; document.getElementById('dlg').showModal(); }
+
+// ── NAV ──
+function gp(p){
+  document.querySelectorAll('.nb').forEach(b=>{ b.classList.toggle('on',b.dataset.p===p); });
+  rp(p);
+}
+
+// ── CHART: area line ──
+function chart(scores,days){
+  const W=270,H=58,pad=16,mx=10,mn=0;
+  const xs=scores.map((_,i)=>pad+(i/(scores.length-1))*(W-pad*2));
+  const ys=scores.map(s=>H-8-((s-mn)/(mx-mn))*(H-16));
+  const pts=xs.map((x,i)=>`${x},${ys[i]}`).join(' ');
+  const area=`${pts} ${W-pad},${H-4} ${pad},${H-4}`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">
+    <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2A5440" stop-opacity=".18"/>
+      <stop offset="100%" stop-color="#2A5440" stop-opacity="0"/>
+    </linearGradient></defs>
+    <polygon points="${area}" fill="url(#g1)"/>
+    <polyline points="${pts}" fill="none" stroke="#2A5440" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${xs.map((x,i)=>{
+      const isLast=i===scores.length-1;
+      return `${isLast?`<circle cx="${x}" cy="${ys[i]}" r="4" fill="#2A5440" stroke="#fff" stroke-width="2"/>`:''}
+      <text x="${x}" y="${H+2}" text-anchor="middle" font-size="9.5" fill="#718A7A">${days[i]}</text>`;
+    }).join('')}
+  </svg>`;
+}
+
+// ── SCORE RING ──
+function ring(score){
+  const r=50,cx=62,cy=62,c=2*Math.PI*r;
+  const fill=(score/10)*c;
+  const col=score>=7?'#2A5440':score>=4?'#5A9478':'#C4784A';
+  const lab=score>=7?'状态不错':score>=4?'有些模糊':'比较困难';
+  return `<svg width="124" height="124" viewBox="0 0 124 124">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E6EDE0" stroke-width="10"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="10"
+      stroke-dasharray="${fill.toFixed(1)} ${(c-fill).toFixed(1)}" stroke-linecap="round"
+      transform="rotate(-90 ${cx} ${cy})"/>
+    <text x="${cx}" y="${cy-7}" text-anchor="middle" font-size="30" font-weight="700" fill="#1A2E24">${score}</text>
+    <text x="${cx}" y="${cy+10}" text-anchor="middle" font-size="10" fill="#718A7A">/ 10</text>
+    <text x="${cx}" y="${cy+24}" text-anchor="middle" font-size="10" fill="${col}">${lab}</text>
+  </svg>`;
+}
+
+// ── PAGES ──
+function rp(p){
+  const el=document.getElementById('ps');
+  const sc=[4,5,3,6,5,7,S.score],dy=['一','二','三','四','五','六','今'];
+  let h='';
+
+  if(p==='today') h=`<div class="sc">
+    <div class="lbl">清志</div>
+    <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin:6px 0 4px">慢慢来，也没关系。</div>
+    <p class="muted" style="font-size:13px;margin-bottom:14px">先照顾此刻的自己。</p>
+    <div class="card c-sage" style="text-align:center;padding:16px 14px">
+      <div class="lbl" style="margin-bottom:10px">${S.saved?'刚刚记录':'最近一次 · 示例'}</div>
+      <div style="display:flex;justify-content:center">${ring(S.score)}</div>
+      <button class="btn btn-p btn-w" onclick="gp('log')" style="margin-top:12px">${S.saved?'修改记录':'记一下今天'} ＋</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px">
+      <span style="font-weight:600;font-size:13px">这一周</span><span class="note">示例数据</span>
+    </div>
+    ${chart(sc,dy)}
+    <div class="card" style="margin-top:14px">
+      <div class="lbl" style="margin-bottom:6px">今天了解一件小事</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:5px">留意活动后的变化</div>
+      <p style="font-size:13px">若活动后状态明显加重，记录活动内容和随后两天的变化。</p>
+      <button class="btn btn-t" onclick="gp('evidence')">查看建议与依据 →</button>
+    </div>
+    ${S.profile.age?`<p class="agenote">${agen()}</p>`:''}
+    ${S.profile.cycle?`<button class="btn-q" onclick="gp('cycle')">月经与状态记录 →</button>`:''}
+  </div>`;
+
+  else if(p==='log') h=`<div class="sc">
+    <div class="lbl">轻量记录</div>
+    <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin:6px 0 14px">此刻，感觉怎么样？</div>
+    <div class="card c-sage">
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:13px;font-weight:600">清晰度自评</span>
+        <span style="font-size:22px;font-weight:700;color:var(--pine)" id="sv">${S.score}</span>
+      </div>
+      <input type="range" id="sr" min="0" max="10" value="${S.score}"
+        oninput="document.getElementById('sv').textContent=this.value">
+      <div style="display:flex;justify-content:space-between;margin-top:5px" class="note">
+        <span>极不清晰</span><span>非常清晰</span>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:600;margin:14px 0 6px">哪些感受更明显？</div>
+    <p class="note" style="margin-bottom:8px">可多选，也可以跳过</p>
+    <div class="chips">
+      ${['难集中','容易忘事','思考变慢','找词困难','精神疲惫','不确定'].map(s=>`<button class="chip" onclick="this.classList.toggle('on')">${s}</button>`).join('')}
+    </div>
+    <div class="card" style="margin-top:12px">
+      <label class="fl" for="slp">昨晚睡了多久？（可选，小时）</label>
+      <input id="slp" type="number" min="0" max="24" step="0.5" placeholder="例如 7.5">
+    </div>
+    <button class="btn btn-p btn-w" style="margin-top:12px"
+      onclick="S.score=Number(document.getElementById('sr').value);S.saved=true;gp('today')">保存自评</button>
+    <p class="note" style="margin:7px 0">症状与睡眠仅展示交互，本手稿不保存。</p>
+    <button class="btn btn-t" onclick="gp('food')">添加饮食与活动记录 →</button>
+  </div>`;
+
+  else if(p==='insight') h=`<div class="sc">
+    <div class="lbl">观察，不急着解释</div>
+    <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin:6px 0 14px">最近一周的你</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-weight:600;font-size:13px">清晰度自评</span><span class="note">7 天示例</span>
+      </div>
+      ${chart(sc,dy)}
+      <p class="note" style="margin-top:7px">仅供本人纵向回看，非认知测试。</p>
+    </div>
+    <div class="card c-sage">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px">先积累，再看规律</div>
+      <p style="font-size:13px">当前真实记录不足，暂不生成关联分析。图表为设计示例。</p>
+    </div>
+    <div style="font-size:13px;font-weight:600;margin:14px 0 6px">接下来可以记录</div>
+    <p style="font-size:13px">睡眠是否恢复精力？<br>活动后当天或随后两天，是否更不舒服？</p>
+    <button class="btn btn-p" style="margin-top:14px" onclick="gp('log')">补充一条记录</button>
+    ${S.profile.cycle?`<div class="card" style="margin-top:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px">周期与清晰度</div>
+      <p style="font-size:13px">已记录 ${S.periods.length} 段经期。当前不足以判断个人关联。</p>
+      <button class="btn-q" onclick="gp('cycle')">补充月经记录 →</button>
+    </div>`:''}
+  </div>`;
+
+  else if(p==='evidence') h=`<div class="sc">
+    <button class="btn btn-t" onclick="gp('today')">← 返回</button>
+    <div class="lbl" style="margin-top:8px">建议依据</div>
+    <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin:6px 0 14px">留意活动后的变化</div>
+    <div class="card c-sage">
+      <div style="font-size:13px;font-weight:600;margin-bottom:7px">先观察自己的耐受情况</div>
+      <p style="font-size:13px">若活动后状态明显加重，记录活动内容和随后两天的变化，并与专业人员讨论。</p>
+    </div>
+    <div style="font-size:13px;font-weight:600;margin:14px 0 6px">为什么有这条提醒？</div>
+    <p style="font-size:13px">CDC 在长新冠临床指导中指出，活动后不适可能延迟 12–48 小时出现。</p>
+    <div class="card c-amber" style="margin-top:12px">
+      <div class="sbadge" style="margin-bottom:9px">📋 指南建议</div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:4px">适用范围</div>
+      <p style="font-size:12px">长新冠相关活动后不适。不是对所有脑雾的通用运动处方；不代表你已被诊断。</p>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:7px">原始来源</div>
+      <a href="https://www.cdc.gov/long-covid/hcp/clinical-guidance/index.html" target="_blank" rel="noopener" style="font-size:13px">CDC · Long COVID Clinical Guidance ↗</a>
+      <p class="note" style="margin-top:5px">查阅：2026-11-13 · 正式上线前需专业审核</p>
+    </div>
+  </div>`;
+
+  else if(p==='food') h=`<div class="sc">
+    <button class="btn btn-t" onclick="gp('log')">← 返回</button>
+    <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin:10px 0 14px">日常生活里的线索</div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px">午餐 · 示例</div>
+      <p style="font-size:13px;margin-bottom:10px">米饭 / 豆腐 / 青菜 / 鸡蛋</p>
+      <p class="note">份量待确认；混合菜估算误差较大。</p>
+      <button class="btn btn-g btn-w" style="margin-top:12px" onclick="modal('规划：拍照或文字输入 → 核对食物 → 确认份量。此手稿未接入识别服务。')">确认食物与份量</button>
+    </div>
+    <div class="card c-sage">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px">营养线索</div>
+      <p style="font-size:13px">先关注饮食种类和规律。不根据这一餐判断营养缺乏，也不推荐补剂剂量。</p>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px">活动与恢复</div>
+      <p style="font-size:13px;margin-bottom:10px">活动后当天或随后两天，是否更不舒服？</p>
+      <div class="chips">
+        ${['是','否','不确定'].map(s=>`<button class="chip" onclick="this.classList.toggle('on')">${s}</button>`).join('')}
+      </div>
+    </div>
+  </div>`;
+
+  else if(p==='me') h=`<div class="sc">
+    <div class="lbl">按你的节奏</div>
+    <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin:6px 0 14px">我的清志</div>
+    <div class="card c-pine" style="margin-bottom:16px">
+      <div style="font-size:12px;opacity:.7;margin-bottom:4px">基础版</div>
+      <div style="font-size:16px;font-weight:600">好好记录，不必追赶进度。</div>
+      <div style="font-size:12px;margin-top:8px;opacity:.7">${S.profile.sex||'未设置'} · ${S.profile.age||'年龄未填写'}</div>
+    </div>
+    ${[
+      {ic:'🔔',lb:'通知与提醒',sub:'设置每日提醒时间'},
+      {ic:'📊',lb:'导出我的数据',sub:'下载 CSV 或 PDF'},
+      {ic:'🔒',lb:'隐私与删除',sub:'管理你的数据'},
+      {ic:'⭐',lb:'会员与订阅',sub:'清志 Plus · 价格待验证'},
+    ].map(x=>`<div class="si" onclick="modal('${x.lb}：设计占位，尚未接入正式服务。')">
+      <div class="si-l"><div class="si-icon" style="background:var(--sage)">${x.ic}</div>
+      <div><div style="font-size:13px;font-weight:600">${x.lb}</div><div class="note">${x.sub}</div></div></div>
+      <span style="color:var(--muted);font-size:18px">›</span>
+    </div>`).join('')}
+    <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+      <button class="btn-q" onclick="ob(1)">重新体验首次使用</button>
+      ${S.profile.sex==='女性'||S.profile.cycle?`<br><button class="btn-q" style="margin-top:8px" onclick="S.profile.cycle=!S.profile.cycle;gp('me')">${S.profile.cycle?'关闭':'启用'}月经记录</button>`:''}
+    </div>
+  </div>`;
+
+  else if(p==='cycle') h=cyc();
+
+  el.innerHTML=h;
+  el.scrollTop=0;
+}
+
+// ── CYCLE ──
+function cyc(){
+  return `<div class="sc">
+    <div class="lbl">身体的节律 · 私人记录</div>
+    <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin:6px 0 4px">月经与状态</div>
+    <p class="muted" style="font-size:13px;margin-bottom:14px">记下发生的事，不急着解释。</p>
+    <label class="fl" for="ps">开始日期</label>
+    <input id="ps" type="date">
+    <label class="fl" for="pe">结束日期（可留空，表示仍在持续）</label>
+    <input id="pe" type="date">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+      <div><label class="fl" for="pf">出血量</label>
+      <select id="pf"><option>未记录</option><option>少</option><option>中</option><option>多</option></select></div>
+      <div><label class="fl" for="pp">疼痛程度</label>
+      <select id="pp"><option>未记录</option><option>无</option><option>轻</option><option>中</option><option>重</option></select></div>
+    </div>
+    <button class="btn btn-p btn-w" style="margin-top:14px" onclick="savep()">保存经期记录</button>
+    <p class="note" style="margin-top:7px">不根据日期推断激素水平。记录存在当前页面内存中。</p>
+    <div style="font-size:13px;font-weight:600;margin:16px 0 8px">已记录</div>
+    ${S.periods.length?S.periods.map((r,i)=>`
+      <div style="border-top:1px solid var(--border);padding:10px 0">
+        <div class="ptag">${r.start} — ${r.end||'持续中'}</div>
+        <div class="note" style="margin-top:4px">出血量：${r.flow} · 疼痛：${r.pain}</div>
+        <button class="btn-q" style="margin-top:4px" onclick="S.periods.splice(${i},1);gp('cycle')">删除</button>
+      </div>`).join(''):'<p class="note">还没有记录。也可以只记清晰度。</p>'}
+    <button class="btn btn-t" onclick="gp('today')" style="margin-top:12px">← 返回今日</button>
+  </div>`;
+}
+function savep(){
+  const s=document.getElementById('ps').value,e=document.getElementById('pe').value;
+  if(!s){modal('请填写开始日期。');return}
+  if(e&&e<s){modal('结束日期不能早于开始日期。');return}
+  const td=new Date().toISOString().slice(0,10);
+  if(s>td||(e&&e>td)){modal('请记录实际发生的日期，不能填写未来日期。');return}
+  if(S.periods.some(r=>s<=(r.end||td)&&(e||td)>=r.start)){modal('日期与已有记录重叠，请先删除需要修正的记录。');return}
+  S.periods.push({start:s,end:e,flow:document.getElementById('pf').value,pain:document.getElementById('pp').value});
+  gp('cycle');
+}
+
+// ── ONBOARDING ──
+function agen(){
+  const a=S.profile.age;
+  if(a==='65 岁及以上') return '记录变化是否影响熟悉的日常任务；持续或加重时寻求专业评估，不要仅归因于年龄。';
+  if(a==='45–54 岁'||a==='55–64 岁') return '可补充睡眠、用药变化与生活阶段；如有周期变化，可选择记录。年龄不能判断原因。';
+  return '先观察睡眠、压力、饮食与症状出现的时间。年龄只帮助调整提问，不用于推断病因。';
+}
+function ob(step){
+  document.getElementById('pn').style.visibility='hidden';
+  const el=document.getElementById('ps');
+  const dots=`<div class="prog"><div class="ps done"></div><div class="ps${step===2?' done':''}"></div></div>`;
+  if(step===1){
+    el.innerHTML=`<div class="sc">
+      <div class="lbl">初次见面 · 1 / 2</div>${dots}
+      <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin-bottom:7px">让清志，更了解你。</div>
+      <p class="muted" style="font-size:13px;margin-bottom:18px">用于调整记录入口和内容。可选择暂不提供，之后随时修改。</p>
+      <label class="fl" for="os">性别</label>
+      <select id="os"><option value="">请选择</option>${['女性','男性','其他','暂不提供'].map(x=>`<option ${x===S.profile.sex?'selected':''}>${x}</option>`).join('')}</select>
+      <label class="fl" for="oa">年龄范围</label>
+      <select id="oa"><option value="">请选择</option>${['18 岁以下','18–24 岁','25–34 岁','35–44 岁','45–54 岁','55–64 岁','65 岁及以上','暂不提供'].map(x=>`<option ${x===S.profile.age?'selected':''}>${x}</option>`).join('')}</select>
+      <p class="note" style="margin-top:7px">不需要生日；年龄不是诊断依据。</p>
+      <button class="btn btn-p btn-w" style="margin-top:18px" onclick="nob()">继续 →</button>
+      <button class="btn btn-t btn-w" style="margin-top:7px" onclick="fob()">暂时跳过</button>
+    </div>`;
+  } else {
+    const f=S.profile.sex==='女性';
+    el.innerHTML=`<div class="sc">
+      <div class="lbl">初次见面 · 2 / 2</div>${dots}
+      <div style="font-family:'Noto Serif SC',serif;font-size:22px;margin-bottom:7px">${f?'把周期，也记下来。':'选择适合你的记录。'}</div>
+      <p style="font-size:13px;margin-bottom:14px">经期前后感受可能变化。你可以把出血、疼痛与清晰度放在一起观察。</p>
+      <div class="card c-sage">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input id="co" type="checkbox" ${S.profile.cycle?'checked':''}>
+          <span style="font-size:13px">启用月经记录（可选）</span>
+        </label>
+        <p class="note" style="margin-top:7px">并非所有女性都有月经；任何需要的人都可以启用。不会按性别自动收集周期数据。</p>
+      </div>
+      <p class="agenote">${agen()}</p>
+      <p class="note">手稿资料仅保留在当前页面内存，刷新清除。不提供排卵或避孕预测。</p>
+      <button class="btn btn-p btn-w" style="margin-top:18px" onclick="S.profile.cycle=document.getElementById('co').checked;fob()">开始使用清志</button>
+      <button class="btn btn-t btn-w" style="margin-top:7px" onclick="ob(1)">← 上一步</button>
+    </div>`;
+  }
+}
+function nob(){
+  const s=document.getElementById('os').value,a=document.getElementById('oa').value;
+  if(!s||!a){modal('请选择性别与年龄范围，也可以选择"暂不提供"。');return}
+  if(a==='18 岁以下'){modal('当前版本面向成年人，尚未提供未成年人个性化建议。');return}
+  S.profile.sex=s;S.profile.age=a;ob(2);
+}
+function fob(){ document.getElementById('pn').style.visibility='visible'; gp('today'); }
+
+// ── INIT ──
+ob(1);
+</script>
+</body>
+</html>

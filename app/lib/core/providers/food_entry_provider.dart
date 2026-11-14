@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../database/database_helper.dart';
 import '../models/food_entry.dart';
 import '../../shared/utils/date_format_util.dart';
 import 'database_provider.dart';

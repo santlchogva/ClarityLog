@@ -139,8 +139,8 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
             const SizedBox(height: 32),
             PrimaryButton(
               label: _saving ? '保存中…' : '保存记录',
-              onPressed: _saving ? null : _save,
-              mode: ButtonMode.full,
+              onTap: _saving ? null : _save,
+              fullWidth: true,
             ),
             const SizedBox(height: 48),
           ],

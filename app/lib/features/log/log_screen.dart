@@ -36,7 +36,7 @@ class _LogScreenState extends ConsumerState<LogScreen> {
     final note = _noteController.text.trim();
 
     if (todayVal != null) {
-      await notifier.update(todayVal.copyWith(
+      await notifier.updateEntry(todayVal.copyWith(
         score: _score,
         symptoms: _symptoms,
         sleepHours: _sleepHours,
@@ -178,8 +178,8 @@ class _LogScreenState extends ConsumerState<LogScreen> {
             const SizedBox(height: 32),
             PrimaryButton(
               label: _saving ? '保存中…' : '保存记录',
-              onPressed: _saving ? null : _save,
-              mode: ButtonMode.full,
+              onTap: _saving ? null : _save,
+              fullWidth: true,
             ),
             const SizedBox(height: 48),
           ],

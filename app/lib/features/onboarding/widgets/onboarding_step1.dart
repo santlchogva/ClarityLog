@@ -51,8 +51,8 @@ class OnboardingStep1 extends StatelessWidget {
           const Spacer(),
           PrimaryButton(
             label: '开始',
-            onPressed: onNext,
-            mode: ButtonMode.full,
+            onTap: onNext,
+            fullWidth: true,
           ),
           const SizedBox(height: 48),
         ],

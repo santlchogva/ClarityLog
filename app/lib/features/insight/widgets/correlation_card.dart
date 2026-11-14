@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../core/models/log_entry.dart';
 import '../../../shared/widgets/card_base.dart';
@@ -31,7 +30,7 @@ class CorrelationCard extends StatelessWidget {
     }
 
     final withSleep = entries
-        .where((e) => e != null && e!.sleepHours != null)
+        .where((e) => e != null && e.sleepHours != null)
         .cast<LogEntry>()
         .toList();
 

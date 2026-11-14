@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
-import '../../core/models/period_entry.dart';
 import '../../core/providers/period_provider.dart';
-import '../../core/providers/user_profile_provider.dart';
 import '../../shared/utils/symptoms_constants.dart';
 import '../../shared/widgets/label_text.dart';
 import '../../shared/widgets/primary_button.dart';
@@ -124,8 +122,9 @@ class _CycleScreenState extends ConsumerState<CycleScreen> {
           if (!_showForm)
             PrimaryButton(
               label: '添加记录',
-              onPressed: () => setState(() => _showForm = true),
-              mode: ButtonMode.outlined,
+              onTap: () => setState(() => _showForm = true),
+              fullWidth: true,
+              outlined: true,
             ),
           if (_showForm) ...[
             const SizedBox(height: 8),
@@ -249,16 +248,17 @@ class _AddPeriodForm extends StatelessWidget {
               Expanded(
                 child: PrimaryButton(
                   label: '取消',
-                  onPressed: onCancel,
-                  mode: ButtonMode.outlined,
+                  onTap: onCancel,
+                  fullWidth: true,
+                  outlined: true,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: PrimaryButton(
                   label: '保存',
-                  onPressed: onSave,
-                  mode: ButtonMode.full,
+                  onTap: onSave,
+                  fullWidth: true,
                 ),
               ),
             ],

@@ -135,8 +135,8 @@ class _OnboardingStep2State extends State<OnboardingStep2> {
           const SizedBox(height: 40),
           PrimaryButton(
             label: '完成设置',
-            onPressed: _handleComplete,
-            mode: ButtonMode.full,
+            onTap: _handleComplete,
+            fullWidth: true,
           ),
           const SizedBox(height: 48),
         ],

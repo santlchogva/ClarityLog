@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../database/database_helper.dart';
 import '../models/log_entry.dart';
 import '../../shared/utils/date_format_util.dart';
 import 'database_provider.dart';
@@ -21,7 +20,7 @@ class LogEntryNotifier extends AsyncNotifier<List<LogEntry>> {
     ref.invalidateSelf();
   }
 
-  Future<void> update(LogEntry entry) async {
+  Future<void> updateEntry(LogEntry entry) async {
     final db = ref.read(databaseHelperProvider);
     await db.logEntryDao.update(entry);
     ref.invalidateSelf();

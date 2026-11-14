@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import '../../core/providers/food_entry_provider.dart';
-import '../../shared/widgets/label_text.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../food/widgets/food_entry_card.dart';
 import '../food/widgets/add_food_form.dart';
@@ -59,8 +58,13 @@ class _FoodScreenState extends ConsumerState<FoodScreen> {
           if (_showForm) ...[
             const SizedBox(height: 8),
             AddFoodForm(
-              onSave: (entry) async {
-                await ref.read(foodEntriesProvider.notifier).add(entry);
+              onSave: (mealType, description, postMealFeel) async {
+                final notifier = ref.read(foodEntriesProvider.notifier);
+                await notifier.add(notifier.createNew(
+                  mealType: mealType,
+                  description: description,
+                  postMealFeel: postMealFeel,
+                ));
                 setState(() => _showForm = false);
               },
               onCancel: () => setState(() => _showForm = false),
@@ -70,8 +74,9 @@ class _FoodScreenState extends ConsumerState<FoodScreen> {
           if (!_showForm)
             PrimaryButton(
               label: '添加饮食记录',
-              onPressed: () => setState(() => _showForm = true),
-              mode: ButtonMode.outlined,
+              onTap: () => setState(() => _showForm = true),
+              fullWidth: true,
+              outlined: true,
             ),
           const SizedBox(height: 48),
         ],

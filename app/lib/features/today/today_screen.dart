@@ -86,7 +86,7 @@ class _ScoreSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ScoreRing(score: today ?? 0, animate: true),
+        ScoreRing(score: today ?? 0),
         const SizedBox(width: 20),
         Expanded(
           child: Column(

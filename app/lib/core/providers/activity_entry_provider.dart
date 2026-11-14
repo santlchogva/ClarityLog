@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../database/database_helper.dart';
 import '../models/activity_entry.dart';
 import 'database_provider.dart';
 
