@@ -1,0 +1,39 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.50.0'
+          channel: 'stable'
+
+      - name: Generate iOS platform files
+        working-directory: app
+        run: flutter create --platforms=ios .
+
+      - name: Install dependencies
+        working-directory: app
+        run: flutter pub get
+
+      - name: Build iOS IPA (no code signing)
+        working-directory: app
+        run: flutter build ipa --no-codesign --release
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: clarity-log-ios-v${{ github.run_number }}
+          path: app/build/ios/ipa/*.ipa
+          retention-days: 30
