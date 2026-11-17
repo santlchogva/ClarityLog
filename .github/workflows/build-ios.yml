@@ -27,19 +27,24 @@ jobs:
         working-directory: app
         run: flutter pub get
 
-      - name: Build iOS IPA (no code signing)
+      - name: Build iOS app (no code signing)
         working-directory: app
-        run: flutter build ipa --no-codesign --release
+        run: flutter build ios --no-codesign --release
 
-      - name: Find IPA file
-        run: find . -name "*.ipa" 2>/dev/null || echo "No IPA found"
+      - name: Package IPA from .app bundle
+        working-directory: app
+        run: |
+          APP_PATH=$(find build/ios/iphoneos -name "*.app" | head -1)
+          echo "Found .app: $APP_PATH"
+          mkdir -p Payload
+          cp -r "$APP_PATH" Payload/
+          zip -r clarity-log-unsigned.ipa Payload
+          ls -lh clarity-log-unsigned.ipa
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: clarity-log-ios-v${{ github.run_number }}
-          path: |
-            app/build/ios/ipa/*.ipa
-            **/*.ipa
-          if-no-files-found: warn
+          path: app/clarity-log-unsigned.ipa
+          if-no-files-found: error
           retention-days: 30
